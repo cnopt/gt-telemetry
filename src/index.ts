@@ -3,7 +3,7 @@ import * as JSSalsa20  from 'js-salsa20'
 import { TextEncoder, TextDecoder } from 'util';
 import { gt7parser } from './parser';
 
-import { createWriteStream, readFileSync } from 'fs';
+import { createWriteStream, readFileSync, writeFile } from 'fs';
 
 // const data: Buffer = readFileSync('../example-package.txt');
 // const packet: Buffer = decrypt(data);
@@ -24,6 +24,8 @@ const sendPort: number = 33739;
 const receivePort: number = 33740;
 // changed to my ip
 const psIp: string = '192.168.1.225';
+// send heartbeat every 13 seconds to keep connection alive and keep getting data
+const heartbeat = 13;
 
 socket.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
@@ -31,7 +33,7 @@ socket.on('error', (err) => {
 });
 
 socket.on('message', (data: Buffer, rinfo: RemoteInfo) => {
-    console.log(`server got: ${data.length} from ${rinfo.address}:${rinfo.port}`);
+    console.log(`server got ${data.length} bytes from ${rinfo.address}:${rinfo.port}`);
 
     if (0x128 === data.length) {
         const packet: Buffer = decrypt(data);
@@ -43,8 +45,8 @@ socket.on('message', (data: Buffer, rinfo: RemoteInfo) => {
         } else {
             const message = gt7parser.parse(packet);
 
-            console.clear();
-            console.log(message);
+            let stream = createWriteStream('C:/Users/TTGCh/Desktop/gt7-8.txt', {flags: 'a'});
+            stream.write(JSON.stringify(message));
         }
       }
 });
@@ -56,14 +58,18 @@ socket.on('listening', () => {
 
 socket.bind(receivePort);
 
-socket.send(Buffer.from('A'),0, 1, sendPort, psIp, (err) => {
-    if (err) {
-        socket.close();
-        return;
-    }
+setInterval(function() {
+    socket.send(Buffer.from('A'),0, 1, sendPort, psIp, (err) => {
+        if (err) {
+            socket.close();
+            return;
+        }
+    
+        console.log('heartbeat send!');
+    });
+    }, heartbeat * 1000);
 
-    console.log('data send!');
-});
+
 
 /**
  * This works!

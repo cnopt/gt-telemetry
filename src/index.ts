@@ -2,18 +2,15 @@ import { Socket, createSocket, RemoteInfo } from 'node:dgram'
 import * as JSSalsa20  from 'js-salsa20'
 import { TextEncoder, TextDecoder } from 'util';
 import { gt7parser } from './parser';
-
-import express = require('express')
-const app = express();
-const socketio = require('socket.io')
-
-app.use(express.json())
-app.use(express.static(__dirname + '/'));
-
-const socketserver = app.listen(1337, () => console.log('1337 server started'));
-const io = require('socket.io')(socketserver)
-
 import { createWriteStream, readFileSync, writeFile } from 'fs';
+import express from 'express';
+
+const app = express();
+app.use(express.json())
+app.use(express.static(__dirname + '/')); // root
+
+const socketServer = app.listen(1337, () => console.log('1337 server started'));
+const io = require('socket.io')(socketServer)
 
 
 //Below setup to fetch data from the ps4
@@ -25,14 +22,12 @@ const psIp: string = '192.168.1.225';
 // send heartbeat every 13 seconds to keep connection alive and keep getting data
 const heartbeat = 13;
 
+
 socket.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
     socket.close();
 });
 
-
-// maybe here send a socket.io emit event, then on the client listen for this emit event
-// and update html data whhen got this emit
 socket.on('message', (data: Buffer, rinfo: RemoteInfo) => {
     console.log(`server got ${data.length} bytes from ${rinfo.address}:${rinfo.port}`);
 
@@ -45,15 +40,16 @@ socket.on('message', (data: Buffer, rinfo: RemoteInfo) => {
             console.log("Magic! error!", magic);
         } else {
             const message = gt7parser.parse(packet);
-            const rpm = message.metersPerSecond;
+            const speed = message.metersPerSecond;
 
+            // uncomment these lines to write to file
             // let stream = createWriteStream('C:/Users/TTGCh/Desktop/gt7-8.txt', {flags: 'a'});
             // stream.write(JSON.stringify(message));
 
             // send data to client socket
-            // for now only send the rpm data
+            // for now only send the speed data
             io.emit('sendData', { 
-                'method': 'GET', 'data': JSON.stringify(rpm)
+                'method': 'GET', 'data': JSON.stringify(speed)
             })
         }
     }
@@ -67,23 +63,19 @@ socket.on('listening', () => {
 
 socket.bind(receivePort);
 
+// send heartbeat to GT server to keep connection alive
 setInterval(function() {
     socket.send(Buffer.from('A'),0, 1, sendPort, psIp, (err) => {
         if (err) {
             socket.close();
             return;
         }
-    
-        console.log('heartbeat send!');
+        console.log('heartbeat sent');
     });
-    }, heartbeat * 1000);
+}, heartbeat * 1000);
 
 
 
-/**
- * This works!
- * @param data
- */
 function decrypt(data: Buffer): Buffer {
     const encoder: TextEncoder = new TextEncoder();
     const key: Uint8Array = encoder.encode('Simulator Interface Packet GT7 ver 0.0'); // 32 bytes key
@@ -107,15 +99,11 @@ function decrypt(data: Buffer): Buffer {
 
 
 // Listen for client connect & disconnect events, and log them
-io.on("connection", socket => {
-    console.log("New client connected");
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-    });
+io.on("connection", socket => { console.log("New client connected" );
+    socket.on('disconnect', () => { console.log('Client disconnected'); });
 });
 
-
+// send index at root
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 })

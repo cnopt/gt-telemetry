@@ -45,14 +45,19 @@ socket.on('message', (data: Buffer, rinfo: RemoteInfo) => {
             console.log("Magic! error!", magic);
         } else {
             const message = gt7parser.parse(packet);
+            const rpm = message.metersPerSecond;
 
-            let stream = createWriteStream('C:/Users/TTGCh/Desktop/gt7-8.txt', {flags: 'a'});
-            stream.write(JSON.stringify(message));
+            // let stream = createWriteStream('C:/Users/TTGCh/Desktop/gt7-8.txt', {flags: 'a'});
+            // stream.write(JSON.stringify(message));
+
+            // send data to client socket
+            // for now only send the rpm data
+            io.emit('sendData', { 
+                'method': 'GET', 'data': JSON.stringify(rpm)
+            })
         }
-      }
+    }
 
-      io.emit('sendData',
-      { 'method': 'GET ', 'info': 'hi'})
 });
 
 socket.on('listening', () => {
@@ -71,8 +76,6 @@ setInterval(function() {
     
         console.log('heartbeat send!');
     });
-    io.emit('sendData',
-      { 'method': 'GET ', 'info': 'hi'})
     }, heartbeat * 1000);
 
 

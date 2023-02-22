@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import socketIO from 'socket.io-client';
 import Button from './client/comps/Button.jsx';
+import MusicRallySpeedometer from './client/comps/MusicRallySpeedometer.jsx';
 import './App.css';
 
 const socket = socketIO.connect('http://localhost:1337') // connect to my server
@@ -10,12 +11,19 @@ export default function App() {
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [gettingData, setGettingData] = useState(false);
-  const [carMessage, setCar] = useState(null);  
-  const [lapMessage, setLap] = useState(null);  
-  const [speedMessage, setSpeed] = useState(null);  
-  const [rpmMessage, setRPM] = useState(null);  
-  const [throttleMessage, setThrottle] = useState(null);  
-  const [brakeMessage, setBrake] = useState(null);  
+  const [carMessage, setCar] = useState(0);  
+  const [lapMessage, setLap] = useState(0);  
+  const [speedMessage, setSpeed] = useState(0);  
+  const [rpmMessage, setRPM] = useState(0);  
+  const [throttleMessage, setThrottle] = useState(0);  
+  const [brakeMessage, setBrake] = useState(0);  
+  const [gearMessage, setGear] = useState(0);
+
+  function mapToThrottleValue(value, sourceRangeMin, sourceRangeMax, targetRangeMin, targetRangeMax) {
+    let targetRange = targetRangeMax - targetRangeMin;
+    let sourceRange = sourceRangeMax - sourceRangeMin;
+    return (value - sourceRangeMin) * targetRange / sourceRange + targetRangeMin;
+  } 
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -30,10 +38,11 @@ export default function App() {
       setGettingData(true);
       setCar(msg.data.car);
       setLap(msg.data.lap);
-      setSpeed(msg.data.speed);
+      setSpeed(Math.round(msg.data.speed));
       setRPM(msg.data.rpm);
       setThrottle(msg.data.throttle);
       setBrake(msg.data.brake);
+      setGear(msg.data.gear);
     })
 
     return () => {
@@ -50,10 +59,14 @@ export default function App() {
 
   return (
     <div className="App">
-      <Button>Testing Button</Button>
+      <Button>Test Button</Button>
       <p>Connected to server: {'' + isConnected}</p>
       <p>Receiving data: {'' + gettingData}</p>
-      <br/><br/>
+      <MusicRallySpeedometer 
+        gear={gearMessage} 
+        speed={speedMessage}
+        throttle={mapToThrottleValue(throttleMessage, 0, 255, 0, 100)}>
+      </MusicRallySpeedometer>
       <table>
         <tr>
           <th>Car</th>

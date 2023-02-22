@@ -1,0 +1,63 @@
+#musicrallyspeedo-container {
+    font-family: gts-num;
+    background-color: rgba(0, 0, 0, 0.35);
+    width: 14rem;
+    padding:1.5rem;
+    border-radius:10px;
+}
+
+#musicrallyspeedo-container #right-area {
+    display: inline-block;
+    padding-left: 1rem;
+    text-align: center;
+}
+
+#musicrallyspeedo-container #left-area {
+    display: inline-block;
+    border-right: 1px solid #e2fafc;
+    padding-right: 1.5rem;
+    padding-left: 0.5rem;
+}
+
+#musicrallyspeedo-container #right-area p {
+    margin:0;
+    padding:0;
+    font-size: 2.25em;
+}
+
+#musicrallyspeedo-container #left-area #brake-container {
+    background-color: black;
+    width: 1.75rem;
+    height: 5rem;
+    display: inline-block;
+    margin-right: 0.75rem;
+    border-radius: 3px;
+    position: relative;
+}
+
+#musicrallyspeedo-container #left-area #brake-container #brake-value {
+    background-color: #ad090d;
+    border-radius: 3px;
+    width: 100%;
+    height: 14%;
+    position: absolute;
+    bottom: 0;
+}
+
+#musicrallyspeedo-container #left-area #throttle-container {
+    background-color: black;
+    width: 1.75rem;
+    height: 5rem;
+    display: inline-block;
+    border-radius: 3px;
+    position: relative;
+}
+
+#musicrallyspeedo-container #left-area #throttle-container #throttle-value {
+    background-color: #e2fafc;
+    border-radius: 3px;
+    width: 100%;
+    height: 38%;
+    position: absolute;
+    bottom: 0;
+}

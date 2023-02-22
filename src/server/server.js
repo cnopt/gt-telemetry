@@ -61,7 +61,8 @@ socket.on('message', (data, rinfo) => {
                     'speed': message.metersPerSecond,
                     'throttle': message.throttle,
                     'brake': message.brake,
-                    'rpm': message.engineRPM
+                    'rpm': message.engineRPM,
+                    'gear': message.currentGear
                 }
             })
         }

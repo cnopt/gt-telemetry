@@ -19,7 +19,7 @@ export default function App() {
   const [brakeMessage, setBrake] = useState(0);  
   const [gearMessage, setGear] = useState(0);
 
-  function mapToThrottleValue(value, sourceRangeMin, sourceRangeMax, targetRangeMin, targetRangeMax) {
+  function mapToRange(value, sourceRangeMin, sourceRangeMax, targetRangeMin, targetRangeMax) {
     let targetRange = targetRangeMax - targetRangeMin;
     let sourceRange = sourceRangeMax - sourceRangeMin;
     return (value - sourceRangeMin) * targetRange / sourceRange + targetRangeMin;
@@ -38,7 +38,7 @@ export default function App() {
       setGettingData(true);
       setCar(msg.data.car);
       setLap(msg.data.lap);
-      setSpeed(Math.round(msg.data.speed));
+      setSpeed(Math.round(msg.data.speed)); // maybe also conv to mph?
       setRPM(msg.data.rpm);
       setThrottle(msg.data.throttle);
       setBrake(msg.data.brake);
@@ -62,11 +62,14 @@ export default function App() {
       <Button>Test Button</Button>
       <p>Connected to server: {'' + isConnected}</p>
       <p>Receiving data: {'' + gettingData}</p>
+
       <MusicRallySpeedometer 
         gear={gearMessage} 
         speed={speedMessage}
-        throttle={mapToThrottleValue(throttleMessage, 0, 255, 0, 100)}>
+        throttle={mapToRange(throttleMessage, 0, 255, 0, 100)}
+        brake={mapToRange(brakeMessage, 0, 255, 0, 100)}>
       </MusicRallySpeedometer>
+      
       <table>
         <tr>
           <th>Car</th>

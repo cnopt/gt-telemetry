@@ -1,10 +1,18 @@
 # gt-telemetry
-NodeJS script to get Telemetry data from the Gran Turismo games, based on [Nenkai](https://twitter.com/Nenkaai)'s [SimulaterInterface](https://github.com/Nenkai/PDTools)
+##### Original NodeJS Typescript proj forked from AleBles
+<hr>
+An application that pulls data from Gran Turismo 7 and displays it in realtime using a React based frontend. Server backend uses SocketIO to emit events to the frontend every time the GT7 listener socket receives a packet from the PS4.
 
-```
-ale@MACHINE:~/gt-telemetry$ ts-node ./index.ts 
-```
 
-## Todo
+The frontend is using components from my [gt7-react-components](https://github.com/cnopt/gt7-react-components) project also available on GitHub.
 
-A lot!
+
+### Todo
+- [x] Push data to browser instead of console
+- [x] Convert original TS scaffold to JS
+- [x] Handle Server events with Node exclusively
+- [x] Integrate React client with server
+- [x] Get React components imports working
+- [ ] Style client with gt-7 comps
+
+

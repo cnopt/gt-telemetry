@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "react-scripts start",
-    "server": "node src/server/server.js",
-    "client": "npm start",
-    "go": "concurrently \"npm run server\" \"npm run client\"",
+    "Server": "node src/server/server.js",
+    "Client": "npm start",
+    "go": "concurrently --names \"Server,Client\" -c \"bgMagenta.bold,bgBlue.bold\" \"npm run Server\" \"npm run Client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

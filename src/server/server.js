@@ -19,8 +19,8 @@ const io = new Server(server, {
         origin: '*'
     }
 });
-// why the FUCK doesnt this log??!?
-io.listen(1337, () => console.log('1337 server started'));
+// server.listen(1337)
+io.listen(1337, () => console.log('Communication server started'));
 
 //Below setup to fetch data from the ps4
 const socket = createSocket('udp4');
@@ -55,7 +55,7 @@ socket.on('message', (data, rinfo) => {
 
             // send data to client socket
             io.emit('sendData', { 
-                'method': 'GET', 'data': {
+                'data': {
                     'car': message.carCode,
                     'lap': message.lapCount,
                     'speed': message.metersPerSecond,
@@ -71,13 +71,13 @@ socket.on('message', (data, rinfo) => {
 
 socket.on('listening', () => {
     const address = socket.address();
-    console.log(`server listening ${address.address}:${address.port}`);
+    console.log(`GT7 listener socket started: ${address.address}:${address.port}`);
 });
 
 socket.bind(receivePort);
 
 // send heartbeat to GT server to keep connection alive
-setInterval(function() {
+setInterval(() => {
     socket.send(Buffer.from('A'),0, 1, sendPort, psIp, (err) => {
         if (err) {
             socket.close();
@@ -88,9 +88,8 @@ setInterval(function() {
 
     // send fake data every x seconds to test react client
     // io.emit('sendData', { 
-    //     'method': 'GET', 'data':'2000'
+    //     'data':'2000'
     // })
-    // end of dake data
 }, heartbeat * 1000);
 
 
@@ -112,12 +111,7 @@ function decrypt(data) {
 }
 
 
-// Listen for client connect & disconnect events, and log them
+// Listen for client connect/disconnect events
 io.on("connection", socket => { console.log("New client connected" );
     socket.on('disconnect', () => { console.log('Client disconnected'); });
 });
-
-// send index at root
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-})

@@ -114,5 +114,5 @@ function decrypt(data) {
 
 // Listen for client connect/disconnect events
 io.on("connection", socket => { console.log("New client connected" );
-    socket.on('disconnect', () => { console.log('Client disconnected'); });
+    socket.on('disconnect', () => { console.log('client disconnected'); });
 });

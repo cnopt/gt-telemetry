@@ -4,11 +4,10 @@ import Button from './client/comps/Button.jsx';
 import MusicRallySpeedometer from './client/comps/MusicRallySpeedometer.jsx';
 import './App.css';
 
-const socket = socketIO.connect('http://localhost:1337') // connect to my server
+const socket = socketIO.connect('http://192.168.1.107:1337') // connect to my server
 
 
 export default function App() {
-
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [gettingData, setGettingData] = useState(false);
   const [carMessage, setCar] = useState(0);  
@@ -38,7 +37,7 @@ export default function App() {
       setGettingData(true);
       setCar(msg.data.car);
       setLap(msg.data.lap);
-      setSpeed(Math.round(msg.data.speed)); // maybe also conv to mph?
+      setSpeed(Math.round(msg.data.speed*2.236936)); // convert to mph
       setRPM(msg.data.rpm);
       setThrottle(msg.data.throttle);
       setBrake(msg.data.brake);
@@ -69,7 +68,7 @@ export default function App() {
         throttle={mapToRange(throttleMessage, 0, 255, 0, 100)}
         brake={mapToRange(brakeMessage, 0, 255, 0, 100)}>
       </MusicRallySpeedometer>
-      
+
       <table>
         <tr>
           <th>Car</th>

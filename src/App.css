@@ -1,0 +1,29 @@
+@font-face {
+    font-family: 'helv';
+    src: url('./client/font/Helv-R.otf');
+  }
+  @font-face {
+    font-family: 'helv-md';
+    src: url('./client/font/Helv-Md.otf');
+  }
+  @font-face {
+    font-family: 'helv-lt';
+    src: url('./client/font/Helv-Lt.otf');
+  }
+  @font-face {
+    font-family: 'helv-bd';
+    src: url('./client/font/Helv-Bd.otf');
+  }
+
+  body {
+    background-color: rgb(67, 67, 67);
+    padding: 1rem;
+    color:#dcdcdc;
+  }
+  
+  @media screen and (min-width:850px) {
+    body {
+      width:85%;
+      margin:auto;
+    }
+  }

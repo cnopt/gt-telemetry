@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import socketIO from 'socket.io-client';
-const socket = socketIO.connect('http://localhost:1337')
+import Button from './client/comps/Button.jsx';
+import './App.css';
+
+const socket = socketIO.connect('http://localhost:1337') // connect to my server
 
 
 export default function App() {
-  
+
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [gettingData, setGettingData] = useState(null);
+  const [gettingData, setGettingData] = useState(false);
   const [carMessage, setCar] = useState(null);  
   const [lapMessage, setLap] = useState(null);  
   const [speedMessage, setSpeed] = useState(null);  
@@ -47,6 +50,7 @@ export default function App() {
 
   return (
     <div className="App">
+      <Button>Testing Button</Button>
       <p>Connected to server: {'' + isConnected}</p>
       <p>Receiving data: {'' + gettingData}</p>
       <br/><br/>

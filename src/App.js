@@ -19,6 +19,7 @@ export default function App() {
   const [brakeMessage, setBrake] = useState(0);  
   const [gearMessage, setGear] = useState(0);
 
+  // maybe only call this function every x seconds instead of 50 times per second...
   function getCarDataFromID(passedId) {
     let gotCar = cardata.filter(({id}) => id === passedId)[0];
     return gotCar;
@@ -30,8 +31,6 @@ export default function App() {
     return (value - sourceRangeMin) * targetRange / sourceRange + targetRangeMin;
   }
 
-  let returnedCar = getCarDataFromID(3188)
-  console.log(returnedCar.car)
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -44,7 +43,8 @@ export default function App() {
 
     socket.on('sendData', (msg) => {
       setGettingData(true);
-      setCar(msg.data.car);
+      setCar(msg.data.car); // start counter that goes to like 1million then call get car function when it gets there
+      // kinda like calling it every 10 seconds?
       setLap(msg.data.lap);
       setSpeed(Math.round(msg.data.speed*2.236936)); // convert to mph
       setRPM(msg.data.rpm);

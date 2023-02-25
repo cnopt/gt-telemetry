@@ -3,11 +3,12 @@ import socketIO from 'socket.io-client';
 import Button from './client/comps/Button.jsx';
 import MusicRallySpeedometer from './client/comps/MusicRallySpeedometer.jsx';
 import './App.css';
+import cardata from './carids.json';
 
 const socket = socketIO.connect('http://192.168.1.107:1337') // connect to my server
 
-
 export default function App() {
+
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [gettingData, setGettingData] = useState(false);
   const [carMessage, setCar] = useState(0);  
@@ -18,11 +19,19 @@ export default function App() {
   const [brakeMessage, setBrake] = useState(0);  
   const [gearMessage, setGear] = useState(0);
 
+  function getCarDataFromID(passedId) {
+    let gotCar = cardata.filter(({id}) => id === passedId)[0];
+    return gotCar;
+  }
+
   function mapToRange(value, sourceRangeMin, sourceRangeMax, targetRangeMin, targetRangeMax) {
     let targetRange = targetRangeMax - targetRangeMin;
     let sourceRange = sourceRangeMax - sourceRangeMin;
     return (value - sourceRangeMin) * targetRange / sourceRange + targetRangeMin;
-  } 
+  }
+
+  let returnedCar = getCarDataFromID(3188)
+  console.log(returnedCar.car)
 
   useEffect(() => {
     socket.on('connect', () => {

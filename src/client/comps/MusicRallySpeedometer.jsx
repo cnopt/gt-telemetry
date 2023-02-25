@@ -8,7 +8,9 @@ export default function MusicRallySpeedometer(props) {
             <div id="musicrallyspeedo-container">
                 <div id="left-area">
                     <div id="brake-container">
-                        <div id="brake-value" style={{height: brake+'%'}}></div>
+                        <div id="brake-value" style={{height: brake+'%'}}>
+                            <div id="brake-segment"></div>
+                        </div>
                     </div>
                     <div id="throttle-container">
                         <div id="throttle-value" style={{height: throttle+'%'}}></div>
